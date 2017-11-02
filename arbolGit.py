@@ -30,6 +30,35 @@ class arbol(object):
 
 	def agregarPalabra(self, palabra, sig):
 		if palabra[0] not in self.raiz.hijos.keys():
+			for n in range(len(palabra)):
+				if n == 0:
+					palabra[0] = nodo(palabra[0])
+					self.agregarRama(self.raiz, palabra[0])
+					palabra[0].agregarPadre(self.raiz)
+				else:
+					palabra[n] = nodo(palabra[n])
+					self.agregarRama(palabra[n - 1], palabra[n])
+					palabra[n].agregarPadre(palabra[n - 1])
+				if n == len(palabra) - 1:
+					palabra[n].significado = sig
+		else:
+			act = self.raiz.hijos[palabra[0]]
+			palabra[0] = act
+			for n in range(1, len(palabra)):
+				if palabra[n] in act.hijos.keys():
+					palabra[n] = act.hijos[palabra[n]]
+					act = act.hijos[palabra[n].id]
+				else:
+					palabra[n] = nodo(palabra[n])
+					act = palabra[n]
+					self.agregarRama(palabra[n - 1], act)
+					act.agregarPadre(palabra[n - 1])
+				if n == len(palabra) - 1:
+					palabra[n].significado = sig
+
+
+"""	def agregarPalabra(self, palabra, sig):
+		if palabra[0] not in self.raiz.hijos.keys():
 			palabra = [nodo(n) for n in palabra]
 		else:
 			act = self.raiz.hijos[palabra[0]]
@@ -50,4 +79,7 @@ class arbol(object):
 				self.agregarRama(palabra[n], palabra[n + 1])
 				palabra[n + 1].agregarPadre(palabra[n])
 			else:
-				palabra[n].significado = sig
+				palabra[n].significado = sig"""
+
+	def agregarRama(self, a, b):
+		a.agregarHijo(b)
